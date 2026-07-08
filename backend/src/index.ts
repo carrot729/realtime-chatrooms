@@ -4,6 +4,9 @@ import cors from "cors";
 
 import connectDb from "./db/connectDb.js";
 
+import chatroomRoutes from "./routes/chat.routes.js";
+import userRoutes from "./routes/user.routes.js";
+
 dotenv.config();
 
 const app = express();
@@ -16,6 +19,9 @@ app.use(
     credentials: true,
   }),
 );
+
+app.use("/chatroom", chatroomRoutes);
+app.use("/user", userRoutes);
 
 app.listen(PORT, () => {
   connectDb();
