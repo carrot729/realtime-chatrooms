@@ -7,8 +7,13 @@ import useChatroomStore from "../stores/chatroom.store";
 const HomePage = () => {
   const [showCreate, setShowCreate] = useState(false);
 
-  const { createRoom, createChatroomError, createChatroomLoading } =
-    useChatroomStore();
+  const {
+    createRoom,
+    createChatroomError,
+    createChatroomLoading,
+    loadingLoadRooms,
+    loadRooms,
+  } = useChatroomStore();
 
   const [roomName, setRoomName] = useState("");
   const [username, setUsername] = useState("");
