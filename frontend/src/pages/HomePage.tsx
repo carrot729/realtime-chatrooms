@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { SyncLoader } from "react-spinners";
 
@@ -13,6 +13,7 @@ const HomePage = () => {
     createChatroomLoading,
     loadingLoadRooms,
     loadRooms,
+    rooms,
   } = useChatroomStore();
 
   const [roomName, setRoomName] = useState("");
@@ -33,8 +34,22 @@ const HomePage = () => {
       setShowCreate(false);
       setRoomName("");
       setUsername("");
+      await loadRooms(clientId);
     }
   };
+
+  useEffect(() => {
+    const fetchRooms = async () => {
+      if (!clientId) {
+        console.log("ClientId not found");
+        return;
+      }
+
+      await loadRooms(clientId);
+    };
+
+    fetchRooms();
+  }, []);
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 px-5 py-12 sm:py-16">
@@ -69,30 +84,23 @@ const HomePage = () => {
         </header>
 
         <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
-          <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-5 hover:border-amber-400 hover:-translate-y-0.5 transition">
-            <div className="flex justify-between items-start gap-3">
-              <h2 className="text-lg font-semibold">Room Name</h2>
-              {/* 
-              <span className="flex items-end gap-0.5 h-4">
-                <span className="w-0.5 rounded-sm h-1 bg-amber-400" />
-                <span className="w-0.5 rounded-sm h-1.5 bg-amber-400" />
-                <span className="w-0.5 rounded-sm h-2.5 bg-neutral-700" />
-                <span className="w-0.5 rounded-sm h-4 bg-neutral-700" />
-              </span> */}
+          {rooms.map((r) => (
+            <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-5 hover:border-amber-400 hover:-translate-y-0.5 transition">
+              <div className="flex justify-between items-start gap-3">
+                <h2 className="text-lg font-semibold">{r?.name}</h2>
+              </div>
+
+              <div className="flex justify-between items-center mt-3">
+                <span className="font-mono text-xs font-semibold tracking-[0.12em] bg-neutral-800 border border-neutral-700 text-teal-300 px-2.5 py-1.5 rounded-md">
+                  {r?.joinCode}
+                </span>
+
+                <button className="px-4 py-1.5 rounded-md bg-teal-400 text-neutral-950 text-sm font-semibold hover:bg-teal-300 transition cursor-pointer">
+                  Join
+                </button>
+              </div>
             </div>
-
-            <p className="text-xs text-neutral-500 mt-1 mb-4">5 online</p>
-
-            <div className="flex justify-between items-center">
-              <span className="font-mono text-xs font-semibold tracking-[0.12em] bg-neutral-800 border border-neutral-700 text-teal-300 px-2.5 py-1.5 rounded-md">
-                ABC123
-              </span>
-
-              <button className="px-4 py-1.5 rounded-md bg-teal-400 text-neutral-950 text-sm font-semibold hover:bg-teal-300 transition cursor-pointer">
-                Join
-              </button>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
 
