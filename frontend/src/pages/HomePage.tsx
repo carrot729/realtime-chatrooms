@@ -28,7 +28,7 @@ const HomePage = () => {
       return;
     }
 
-    const room = await createRoom(username, clientId, roomName);
+    const room = await createRoom(clientId, roomName);
 
     if (room) {
       setShowCreate(false);
@@ -115,13 +115,6 @@ const HomePage = () => {
             className="bg-neutral-900 border border-neutral-800 rounded-2xl p-7 w-full max-w-sm flex flex-col gap-4"
           >
             <h2 className="text-2xl font-bold">Create a new room</h2>
-
-            <input
-              onChange={(e) => setUsername(e.target.value)}
-              value={username}
-              placeholder="Username"
-              className="bg-neutral-800 border border-neutral-700 rounded-lg px-3.5 py-3 text-sm focus:outline-none focus:border-amber-400"
-            />
 
             <input
               onChange={(e) => setRoomName(e.target.value)}

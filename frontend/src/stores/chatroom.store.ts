@@ -16,11 +16,7 @@ type RoomStoreType = {
   loadingLoadRooms: boolean;
   joinRoomLoading: boolean;
   joinRoomError: string | null;
-  createRoom: (
-    username: string,
-    clientId: string,
-    roomName: string,
-  ) => Promise<Chatroom | null>;
+  createRoom: (clientId: string, roomName: string) => Promise<Chatroom | null>;
   loadRooms: (clientId: string) => Promise<Chatroom[] | null>;
   joinRoom: (joinCode: string, clientId: string) => Promise<Chatroom | null>;
 };
@@ -34,12 +30,11 @@ const useChatroomStore = create<RoomStoreType>((set) => ({
   joinRoomLoading: false,
   joinRoomError: null,
 
-  createRoom: async (username: string, clientId: string, roomName: string) => {
+  createRoom: async (clientId: string, roomName: string) => {
     set({ createChatroomLoading: true, createChatroomError: null });
 
     try {
       const response = await api.post("/chatroom/create-chatroom", {
-        username,
         clientId,
         roomName,
       });

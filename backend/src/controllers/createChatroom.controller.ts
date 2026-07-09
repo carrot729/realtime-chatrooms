@@ -14,14 +14,9 @@ const createChatroomController = async (
   req: Request<{}, {}, RoomType>,
   res: Response,
 ) => {
-  const { username, clientId, roomName } = req.body;
+  const { clientId, roomName } = req.body;
 
   try {
-    if (!username)
-      return res
-        .status(400)
-        .json({ success: false, message: "Please enter a username" });
-
     if (!clientId)
       return res
         .status(404)
