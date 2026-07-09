@@ -12,6 +12,7 @@ type Chatroom = {
 type RoomStoreType = {
   chatroom: Chatroom | null;
   createChatroomLoading: boolean;
+  createChatroomError: string | null;
   createRoom: (
     username: string,
     clientId: string,
@@ -21,10 +22,12 @@ type RoomStoreType = {
 
 const useChatroomStore = create<RoomStoreType>((set) => ({
   chatroom: null,
+
   createChatroomLoading: false,
+  createChatroomError: null,
 
   createRoom: async (username: string, clientId: string, roomName: string) => {
-    set({ createChatroomLoading: true });
+    set({ createChatroomLoading: true, createChatroomError: null });
 
     try {
       const response = await api.post("/chatroom/create-chatroom", {
@@ -37,9 +40,12 @@ const useChatroomStore = create<RoomStoreType>((set) => ({
       set({ chatroom, createChatroomLoading: false });
 
       return chatroom;
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      set({ createChatroomLoading: false });
+      const message =
+        error?.response?.data?.message ?? "Something went wrong. Try again";
+
+      set({ createChatroomLoading: false, createChatroomError: message });
       return null;
     }
   },
