@@ -36,7 +36,7 @@ const useChatroomStore = create<RoomStoreType>((set) => ({
         roomName,
       });
 
-      const chatroom = response.data.data as Chatroom;
+      const chatroom = response.data.chatroom as Chatroom;
 
       set({ chatroom, createChatroomLoading: false });
 
