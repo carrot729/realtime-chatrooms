@@ -1,11 +1,14 @@
 import { useState } from "react";
 
+import { SyncLoader } from "react-spinners";
+
 import useChatroomStore from "../stores/chatroom.store";
 
 const HomePage = () => {
   const [showCreate, setShowCreate] = useState(false);
 
-  const { createRoom } = useChatroomStore();
+  const { createRoom, createChatroomError, createChatroomLoading } =
+    useChatroomStore();
 
   const [roomName, setRoomName] = useState("");
   const [username, setUsername] = useState("");
@@ -101,6 +104,13 @@ const HomePage = () => {
             <h2 className="text-2xl font-bold">Create a new room</h2>
 
             <input
+              onChange={(e) => setUsername(e.target.value)}
+              value={username}
+              placeholder="Username"
+              className="bg-neutral-800 border border-neutral-700 rounded-lg px-3.5 py-3 text-sm focus:outline-none focus:border-amber-400"
+            />
+
+            <input
               onChange={(e) => setRoomName(e.target.value)}
               value={roomName}
               autoFocus
@@ -108,18 +118,17 @@ const HomePage = () => {
               className="bg-neutral-800 border border-neutral-700 rounded-lg px-3.5 py-3 text-sm focus:outline-none focus:border-amber-400"
             />
 
-            <input
-              onChange={(e) => setUsername(e.target.value)}
-              value={username}
-              placeholder="Username"
-              className="bg-neutral-800 border border-neutral-700 rounded-lg px-3.5 py-3 text-sm focus:outline-none focus:border-amber-400"
-            />
+            {createChatroomError && (
+              <p className="w-full text-sm text-red-400 -mt-2">
+                {createChatroomError}
+              </p>
+            )}
 
             <button
               type="submit"
               className="px-5 py-2.5 rounded-lg bg-amber-400 text-neutral-950 text-sm font-semibold hover:bg-amber-300 transition cursor-pointer"
             >
-              Create
+              {createChatroomLoading ? <SyncLoader size={7} /> : "Create"}
             </button>
           </form>
         </div>

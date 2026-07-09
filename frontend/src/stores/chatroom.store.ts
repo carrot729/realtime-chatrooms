@@ -37,6 +37,7 @@ const useChatroomStore = create<RoomStoreType>((set) => ({
       });
 
       const chatroom = response.data.data as Chatroom;
+
       set({ chatroom, createChatroomLoading: false });
 
       return chatroom;
@@ -46,6 +47,11 @@ const useChatroomStore = create<RoomStoreType>((set) => ({
         error?.response?.data?.message ?? "Something went wrong. Try again";
 
       set({ createChatroomLoading: false, createChatroomError: message });
+
+      setTimeout(() => {
+        set({ createChatroomError: null });
+      }, 2000);
+
       return null;
     }
   },
