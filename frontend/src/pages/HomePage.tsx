@@ -15,12 +15,27 @@ const HomePage = () => {
     loadingLoadRooms,
     loadRooms,
     rooms,
+    joinRoom,
+    joinRoomLoading,
+    joinRoomError,
   } = useChatroomStore();
 
   const [roomName, setRoomName] = useState("");
-  const [username, setUsername] = useState("");
   const [joinCode, setJoinCode] = useState("");
   const clientId = localStorage.getItem("clientId");
+
+  useEffect(() => {
+    const fetchRooms = async () => {
+      if (!clientId) {
+        console.log("ClientId not found");
+        return;
+      }
+
+      await loadRooms(clientId);
+    };
+
+    fetchRooms();
+  }, []);
 
   const handleCreateRoom = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,23 +50,26 @@ const HomePage = () => {
     if (room) {
       setShowCreate(false);
       setRoomName("");
-      setUsername("");
       await loadRooms(clientId);
     }
   };
 
-  useEffect(() => {
-    const fetchRooms = async () => {
-      if (!clientId) {
-        console.log("ClientId not found");
-        return;
-      }
+  const handleJoinCode = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
+    if (!clientId) {
+      console.log("ClientId not found");
+      return;
+    }
+
+    const room = await joinRoom(clientId, joinCode);
+
+    if (room) {
+      setShowJoin(false);
+      setJoinCode("");
       await loadRooms(clientId);
-    };
-
-    fetchRooms();
-  }, []);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 px-5 py-12 sm:py-16">
@@ -150,8 +168,9 @@ const HomePage = () => {
           className="fixed inset-0 bg-black/70 flex items-center justify-center p-5 z-50"
           onClick={() => setShowJoin(false)}
         >
-          <div
+          <form
             onClick={(e) => e.stopPropagation()}
+            onSubmit={(e) => handleJoinCode(e)}
             className="bg-neutral-900 border border-neutral-800 rounded-2xl p-7 w-full max-w-sm flex flex-col gap-4"
           >
             <h2 className="text-2xl font-bold">Join a room</h2>
@@ -168,7 +187,7 @@ const HomePage = () => {
             <button className="px-5 py-2.5 rounded-lg bg-teal-400 text-neutral-950 text-sm font-semibold hover:bg-teal-300 transition cursor-pointer">
               Join
             </button>
-          </div>
+          </form>
         </div>
       )}
     </div>
