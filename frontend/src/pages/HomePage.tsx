@@ -62,7 +62,7 @@ const HomePage = () => {
       return;
     }
 
-    const room = await joinRoom(clientId, joinCode);
+    const room = await joinRoom(joinCode, clientId);
 
     if (room) {
       setShowJoin(false);
@@ -108,7 +108,10 @@ const HomePage = () => {
 
         <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
           {rooms.map((r) => (
-            <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-5 hover:border-amber-400 hover:-translate-y-0.5 transition">
+            <div
+              key={r._id}
+              className="bg-neutral-900 border border-neutral-800 rounded-xl p-5 hover:border-amber-400 hover:-translate-y-0.5 transition"
+            >
               <div className="flex justify-between items-start gap-3">
                 <h2 className="text-lg font-semibold">{r?.name}</h2>
               </div>

@@ -31,13 +31,16 @@ const joinRoomController = async (req: Request, res: Response) => {
 
     const isMember = room.members.some((memberId) => memberId.equals(user._id));
 
-    if (!isMember) {
-      room.members.push(user._id);
-      await room.save();
+    if (isMember)
+      return res
+        .status(400)
+        .json({ success: false, message: "You are already in the chatroom" });
 
-      user.rooms.push(room._id);
-      await user.save();
-    }
+    room.members.push(user._id);
+    await room.save();
+
+    user.rooms.push(room._id);
+    await user.save();
 
     return res.status(200).json({ success: true, chatroom: room });
   } catch (error) {
