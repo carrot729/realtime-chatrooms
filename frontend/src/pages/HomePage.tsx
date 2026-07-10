@@ -69,6 +69,8 @@ const HomePage = () => {
       setJoinCode("");
       await loadRooms(clientId);
     }
+
+    setJoinCode("");
   };
 
   return (
@@ -84,7 +86,7 @@ const HomePage = () => {
               </p>
 
               <h1 className="text-3xl sm:text-4xl font-semibold tracking-wide">
-                Channels
+                Chat rooms
               </h1>
             </div>
           </div>
