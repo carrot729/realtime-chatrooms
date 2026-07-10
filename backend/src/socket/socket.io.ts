@@ -1,5 +1,6 @@
 import { Server } from "socket.io";
 import type { Server as HttpServer } from "http";
+import { compose } from "stream";
 
 let io: Server;
 
@@ -13,6 +14,12 @@ export const initSocket = (httpServer: HttpServer, corsOrigin: string) => {
 
   io.on("connection", (socket) => {
     console.log("Socket connected:", socket.id);
+
+    socket.on("join_room", (roomId: string) => {
+      socket.join(roomId);
+
+      console.log(`User joined ${roomId}`);
+    });
 
     socket.on("disconnect", () => {
       console.log("socket disconnected:", socket.id);

@@ -3,6 +3,8 @@ import type { Request, Response } from "express";
 import User from "../models/user.model.js";
 import Chatroom from "../models/chatroom.model.js";
 
+import { getIO } from "../socket/socket.io.js";
+
 type EnterChatroomType = {
   clientId: string;
   username: string;
@@ -14,6 +16,7 @@ const enterChatroomController = async (
   res: Response,
 ) => {
   const { clientId, username, roomId } = req.body;
+
   try {
     if (!username)
       return res
