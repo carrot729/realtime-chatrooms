@@ -21,6 +21,12 @@ export const initSocket = (httpServer: HttpServer, corsOrigin: string) => {
       console.log(`User joined ${roomId}`);
     });
 
+    socket.on("leave-room", (roomId: string) => {
+      socket.leave(roomId);
+
+      console.log(`User left ${roomId}`);
+    });
+
     socket.on("disconnect", () => {
       console.log("socket disconnected:", socket.id);
     });
