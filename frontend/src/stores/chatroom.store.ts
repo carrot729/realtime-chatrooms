@@ -127,6 +127,7 @@ const useChatroomStore = create<RoomStoreType>((set) => ({
         roomId,
       });
 
+      socket.connect();
       socket.emit("join-room", response.data.room._id);
 
       set({ enterRoomLoading: false });

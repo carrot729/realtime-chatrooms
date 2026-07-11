@@ -10,6 +10,8 @@ const HomePage = () => {
 
   const [showCreate, setShowCreate] = useState(false);
   const [showJoin, setShowJoin] = useState(false);
+  const [showUsername, setShowUsername] = useState(false);
+  const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
 
   const {
     createRoom,
@@ -21,10 +23,15 @@ const HomePage = () => {
     joinRoom,
     joinRoomLoading,
     joinRoomError,
+    enterRoom,
+    enterRoomLoading,
   } = useChatroomStore();
 
   const [roomName, setRoomName] = useState("");
   const [joinCode, setJoinCode] = useState("");
+
+  const [username, setUsername] = useState("");
+
   const clientId = localStorage.getItem("clientId");
 
   useEffect(() => {
@@ -74,6 +81,26 @@ const HomePage = () => {
     }
 
     setJoinCode("");
+  };
+
+  const handleEnterRoom = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!clientId) {
+      console.log("ClientId not found");
+      return;
+    }
+
+    if (!selectedRoomId) {
+      console.log("Room Id not found");
+      return;
+    }
+
+    const room = await enterRoom(clientId, username, selectedRoomId);
+
+    if (room) {
+      navigate(`/room/${room?._id}`);
+    }
   };
 
   return (
@@ -127,7 +154,10 @@ const HomePage = () => {
                 </span>
 
                 <button
-                  onClick={() => {}}
+                  onClick={() => {
+                    setShowUsername(true);
+                    setSelectedRoomId(r?._id);
+                  }}
                   className="px-4 py-1.5 rounded-md bg-teal-400 text-neutral-950 text-sm font-semibold hover:bg-teal-300 transition cursor-pointer"
                 >
                   Join
@@ -203,6 +233,33 @@ const HomePage = () => {
 
             <button className="px-5 py-2.5 rounded-lg bg-teal-400 text-neutral-950 text-sm font-semibold hover:bg-teal-300 transition cursor-pointer">
               {joinRoomLoading ? <SyncLoader size={7} /> : "Join"}
+            </button>
+          </form>
+        </div>
+      )}
+
+      {showUsername && (
+        <div
+          className="fixed inset-0 bg-black/70 flex items-center justify-center p-5 z-50"
+          onClick={() => setShowUsername(false)}
+        >
+          <form
+            onClick={(e) => e.stopPropagation()}
+            onSubmit={(e) => handleEnterRoom(e)}
+            className="bg-neutral-900 border border-neutral-800 rounded-2xl p-7 w-full max-w-sm flex flex-col gap-4"
+          >
+            <h2 className="text-2xl font-bold">Enter a username</h2>
+
+            <input
+              onChange={(e) => setUsername(e.target.value)}
+              value={username}
+              autoFocus
+              placeholder="Username"
+              className="bg-neutral-800 border border-neutral-700 rounded-lg px-3.5 py-3 text-sm focus:outline-none focus:border-amber-400"
+            />
+
+            <button className="px-5 py-2.5 rounded-lg bg-amber-400 text-neutral-950 text-sm font-semibold hover:bg-amber-300 transition cursor-pointer">
+              Continue
             </button>
           </form>
         </div>

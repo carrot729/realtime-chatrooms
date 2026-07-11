@@ -15,7 +15,7 @@ export const initSocket = (httpServer: HttpServer, corsOrigin: string) => {
   io.on("connection", (socket) => {
     console.log("Socket connected:", socket.id);
 
-    socket.on("join_room", (roomId: string) => {
+    socket.on("join-room", (roomId: string) => {
       socket.join(roomId);
 
       console.log(`User joined ${roomId}`);
