@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import { SyncLoader } from "react-spinners";
 
 import useChatroomStore from "../stores/chatroom.store";
+import { useNavigate } from "react-router";
 
 const HomePage = () => {
+  const navigate = useNavigate();
+
   const [showCreate, setShowCreate] = useState(false);
   const [showJoin, setShowJoin] = useState(false);
 
@@ -123,7 +126,10 @@ const HomePage = () => {
                   {r?.joinCode}
                 </span>
 
-                <button className="px-4 py-1.5 rounded-md bg-teal-400 text-neutral-950 text-sm font-semibold hover:bg-teal-300 transition cursor-pointer">
+                <button
+                  onClick={() => {}}
+                  className="px-4 py-1.5 rounded-md bg-teal-400 text-neutral-950 text-sm font-semibold hover:bg-teal-300 transition cursor-pointer"
+                >
                   Join
                 </button>
               </div>

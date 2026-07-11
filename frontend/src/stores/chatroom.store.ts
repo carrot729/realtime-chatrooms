@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 import api from "../lib/api.ts";
+import socket from "../lib/socket.ts";
 
 type Chatroom = {
   _id: string;
@@ -15,10 +16,16 @@ type RoomStoreType = {
   createChatroomError: string | null;
   loadingLoadRooms: boolean;
   joinRoomLoading: boolean;
+  enterRoomLoading: boolean;
   joinRoomError: string | null;
   createRoom: (clientId: string, roomName: string) => Promise<Chatroom | null>;
   loadRooms: (clientId: string) => Promise<Chatroom[] | null>;
   joinRoom: (joinCode: string, clientId: string) => Promise<Chatroom | null>;
+  enterRoom: (
+    clientId: string,
+    username: string,
+    roomId: string,
+  ) => Promise<Chatroom | null>;
 };
 
 const useChatroomStore = create<RoomStoreType>((set) => ({
@@ -29,6 +36,8 @@ const useChatroomStore = create<RoomStoreType>((set) => ({
 
   joinRoomLoading: false,
   joinRoomError: null,
+
+  enterRoomLoading: false,
 
   createRoom: async (clientId: string, roomName: string) => {
     set({ createChatroomLoading: true, createChatroomError: null });
@@ -105,6 +114,27 @@ const useChatroomStore = create<RoomStoreType>((set) => ({
       }, 2000);
 
       return null;
+    }
+  },
+
+  enterRoom: async (clientId: string, username: string, roomId: string) => {
+    set({ enterRoomLoading: true });
+
+    try {
+      const response = await api.post("/chatroom/enter-room", {
+        clientId,
+        username,
+        roomId,
+      });
+
+      socket.emit("join-room", response.data.room._id);
+
+      set({ enterRoomLoading: false });
+
+      return response.data.room;
+    } catch (error) {
+      console.log(error);
+      set({ enterRoomLoading: false });
     }
   },
 }));

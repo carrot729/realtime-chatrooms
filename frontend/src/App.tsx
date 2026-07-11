@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router";
 
 import HomePage from "./pages/HomePage";
+import RoomPage from "./pages/RoomPage";
 
 import useUserStore from "./stores/user.store";
 import { useEffect } from "react";
@@ -24,6 +25,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
+      <Route path="/room/:roomId" element={<RoomPage />} />
     </Routes>
   );
 }
