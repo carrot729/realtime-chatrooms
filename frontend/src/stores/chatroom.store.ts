@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import axios from "axios";
 
 import api from "../lib/api.ts";
 import socket from "../lib/socket.ts";
@@ -18,6 +19,8 @@ type RoomStoreType = {
   joinRoomLoading: boolean;
   enterRoomLoading: boolean;
   joinRoomError: string | null;
+  enterRoomError: string | null;
+
   createRoom: (clientId: string, roomName: string) => Promise<Chatroom | null>;
   loadRooms: (clientId: string) => Promise<Chatroom[] | null>;
   joinRoom: (joinCode: string, clientId: string) => Promise<Chatroom | null>;
@@ -38,6 +41,7 @@ const useChatroomStore = create<RoomStoreType>((set) => ({
   joinRoomError: null,
 
   enterRoomLoading: false,
+  enterRoomError: null,
 
   createRoom: async (clientId: string, roomName: string) => {
     set({ createChatroomLoading: true, createChatroomError: null });
@@ -135,7 +139,17 @@ const useChatroomStore = create<RoomStoreType>((set) => ({
       return response.data.room;
     } catch (error) {
       console.log(error);
-      set({ enterRoomLoading: false });
+      if (axios.isAxiosError(error)) {
+        const message =
+          error.response?.data?.message ?? "Something went wrong. Try again";
+
+        set({
+          enterRoomLoading: false,
+          enterRoomError: message,
+        });
+
+        return null;
+      }
     }
   },
 }));
