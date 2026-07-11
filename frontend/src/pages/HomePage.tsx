@@ -4,6 +4,7 @@ import { SyncLoader } from "react-spinners";
 
 import useChatroomStore from "../stores/chatroom.store";
 import { useNavigate } from "react-router";
+import socket from "../lib/socket";
 
 const HomePage = () => {
   const navigate = useNavigate();

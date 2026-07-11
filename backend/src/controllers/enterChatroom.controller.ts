@@ -49,13 +49,6 @@ const enterChatroomController = async (
     user.username = username;
     await user.save();
 
-    const isOnline = room.isOnline.some((id) => id.equals(user._id));
-
-    if (!isOnline) {
-      room.isOnline.push(user._id);
-      await room.save();
-    }
-
     res.status(200).json({ success: true, room });
   } catch (error) {
     console.log(error);
