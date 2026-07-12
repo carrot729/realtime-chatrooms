@@ -29,6 +29,10 @@ type RoomStoreType = {
     username: string,
     roomId: string,
   ) => Promise<Chatroom | null>;
+  loadCurrentRoom: (
+    roomId: string,
+    clientId: string,
+  ) => Promise<Chatroom | null>;
 };
 
 const useChatroomStore = create<RoomStoreType>((set) => ({
@@ -150,6 +154,25 @@ const useChatroomStore = create<RoomStoreType>((set) => ({
 
         return null;
       }
+    }
+  },
+
+  loadCurrentRoom: async (roomId: string, clientId: string) => {
+    try {
+      const response = await api.post("/chatroom-load-current-room", {
+        roomId,
+        clientId,
+      });
+
+      return response.data.room as Chatroom;
+    } catch (error) {
+      console.log(error);
+
+      if (axios.isAxiosError(error)) {
+        console.log(error.response?.data?.message);
+      }
+
+      return null;
     }
   },
 }));
