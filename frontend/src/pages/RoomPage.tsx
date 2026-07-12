@@ -1,10 +1,17 @@
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
+
 import socket from "../lib/socket";
+
+import useChatroomStore from "../stores/chatroom.store";
 
 const RoomPage = () => {
   const { roomId } = useParams();
+  const clientId = localStorage.getItem("clientId");
+
   const navigate = useNavigate();
+
+  const { loadCurrentRoom, currentRoom } = useChatroomStore();
 
   useEffect(() => {
     if (!roomId) return;
@@ -16,6 +23,17 @@ const RoomPage = () => {
     };
   }, [roomId]);
 
+  useEffect(() => {
+    const fetchRoomData = async () => {
+      if (!roomId) return;
+      if (!clientId) return;
+
+      await loadCurrentRoom(roomId, clientId);
+    };
+
+    fetchRoomData();
+  }, []);
+
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col">
       {/* Header */}
@@ -25,7 +43,9 @@ const RoomPage = () => {
             Live Chat
           </p>
 
-          <h1 className="text-2xl font-semibold mt-1">Room {roomId}</h1>
+          <h1 className="text-2xl font-semibold mt-1">
+            Room name: {currentRoom?.name}
+          </h1>
         </div>
 
         <div className="flex items-center gap-4">
