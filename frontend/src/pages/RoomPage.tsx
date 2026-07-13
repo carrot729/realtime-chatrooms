@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
 import socket from "../lib/socket";
@@ -8,6 +8,8 @@ import useChatroomStore from "../stores/chatroom.store";
 const RoomPage = () => {
   const { roomId } = useParams();
   const clientId = localStorage.getItem("clientId");
+
+  const [onlineCount, setOnlineCount] = useState(0);
 
   const navigate = useNavigate();
 
@@ -26,6 +28,18 @@ const RoomPage = () => {
         roomId,
         clientId,
       });
+    };
+  }, [roomId]);
+
+  useEffect(() => {
+    socket.on("room-online-updated", (data) => {
+      if (data.roomId === roomId) {
+        setOnlineCount(data.onlineCount);
+      }
+    });
+
+    return () => {
+      socket.off("room-online-updated");
     };
   }, [roomId]);
 
@@ -57,7 +71,7 @@ const RoomPage = () => {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 text-sm text-neutral-400">
             <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
-            0 Online
+            {onlineCount} Online
           </div>
 
           <button

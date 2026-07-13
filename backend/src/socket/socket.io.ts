@@ -16,8 +16,17 @@ export const initSocket = (httpServer: HttpServer, corsOrigin: string) => {
   io.on("connection", (socket) => {
     console.log("Socket connected:", socket.id);
 
-    socket.on("join-room", ({ roomId, clientId }) => {
+    socket.on("join-room", async ({ roomId, clientId }) => {
       socket.join(roomId);
+
+      const room = await Chatroom.findById(roomId);
+
+      if (!room) return;
+
+      io.to(roomId).emit("room-online-updated", {
+        roomId,
+        onlineCount: room.isOnline.length,
+      });
 
       console.log(`User joined ${roomId}`);
     });
