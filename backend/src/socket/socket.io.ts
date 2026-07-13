@@ -1,6 +1,5 @@
 import { Server } from "socket.io";
 import type { Server as HttpServer } from "http";
-import { compose } from "stream";
 import Chatroom from "../models/chatroom.model.js";
 import User from "../models/user.model.js";
 
@@ -32,6 +31,13 @@ export const initSocket = (httpServer: HttpServer, corsOrigin: string) => {
       room.isOnline = room.isOnline.filter((id) => !id.equals(user._id));
 
       await room.save();
+
+      const io = getIO();
+
+      io.to(roomId).emit("room-online-updated", {
+        roomId,
+        onlineCount: room.isOnline.length,
+      });
 
       socket.leave(roomId);
 

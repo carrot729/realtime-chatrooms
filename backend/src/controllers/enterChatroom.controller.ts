@@ -54,6 +54,13 @@ const enterChatroomController = async (
     }
     await room.save();
 
+    const io = getIO();
+
+    io.to(roomId).emit("room-online-updated", {
+      roomId,
+      onlineCount: room.isOnline.length,
+    });
+
     res.status(200).json({ success: true, room });
   } catch (error) {
     console.log(error);
