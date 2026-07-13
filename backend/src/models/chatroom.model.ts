@@ -17,6 +17,13 @@ const chatroomSchema = new mongoose.Schema(
       uppercase: true,
       default: () => nanoid(6),
     },
+
+    isOnline: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   { timestamps: true },
 );
