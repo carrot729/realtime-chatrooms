@@ -16,10 +16,16 @@ const RoomPage = () => {
   useEffect(() => {
     if (!roomId) return;
 
-    socket.emit("join-room", roomId);
+    socket.emit("join-room", {
+      roomId,
+      clientId,
+    });
 
     return () => {
-      socket.emit("leave-room", roomId);
+      socket.emit("leave-room", {
+        roomId,
+        clientId,
+      });
     };
   }, [roomId]);
 

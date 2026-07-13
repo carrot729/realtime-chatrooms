@@ -1,6 +1,8 @@
 import { Server } from "socket.io";
 import type { Server as HttpServer } from "http";
 import { compose } from "stream";
+import Chatroom from "../models/chatroom.model.js";
+import User from "../models/user.model.js";
 
 let io: Server;
 
@@ -15,13 +17,22 @@ export const initSocket = (httpServer: HttpServer, corsOrigin: string) => {
   io.on("connection", (socket) => {
     console.log("Socket connected:", socket.id);
 
-    socket.on("join-room", (roomId: string) => {
+    socket.on("join-room", ({ roomId, clientId }) => {
       socket.join(roomId);
 
       console.log(`User joined ${roomId}`);
     });
 
-    socket.on("leave-room", (roomId: string) => {
+    socket.on("leave-room", async ({ roomId, clientId }) => {
+      const room = await Chatroom.findById(roomId);
+      const user = await User.findOne({ clientId });
+
+      if (!room || !user) return;
+
+      room.isOnline = room.isOnline.filter((id) => !id.equals(user._id));
+
+      await room.save();
+
       socket.leave(roomId);
 
       console.log(`User left ${roomId}`);
