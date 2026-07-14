@@ -6,6 +6,7 @@ import socket from "../lib/socket";
 import useChatroomStore from "../stores/chatroom.store";
 
 const RoomPage = () => {
+  console.log("ROOM PAGE RENDERED");
   const { roomId } = useParams();
   const clientId = localStorage.getItem("clientId");
 
@@ -15,8 +16,30 @@ const RoomPage = () => {
 
   const { loadCurrentRoom, currentRoom } = useChatroomStore();
 
+  // 1. Start listening first
   useEffect(() => {
-    if (!roomId) return;
+    socket.on("room-online-updated", (data) => {
+      console.log("RECEIVED ONLINE UPDATE:", data);
+
+      if (data.roomId === roomId) {
+        setOnlineCount(data.onlineCount);
+      }
+    });
+
+    return () => {
+      socket.off("room-online-updated");
+    };
+  }, [roomId]);
+
+  // 2. Then join the room
+  useEffect(() => {
+    if (!roomId || !clientId) return;
+
+    if (!socket.connected) {
+      socket.connect();
+    }
+
+    console.log("JOINING ROOM:", roomId, clientId);
 
     socket.emit("join-room", {
       roomId,
@@ -29,19 +52,7 @@ const RoomPage = () => {
         clientId,
       });
     };
-  }, [roomId]);
-
-  useEffect(() => {
-    socket.on("room-online-updated", (data) => {
-      if (data.roomId === roomId) {
-        setOnlineCount(data.onlineCount);
-      }
-    });
-
-    return () => {
-      socket.off("room-online-updated");
-    };
-  }, [roomId]);
+  }, [roomId, clientId]);
 
   useEffect(() => {
     const fetchRoomData = async () => {

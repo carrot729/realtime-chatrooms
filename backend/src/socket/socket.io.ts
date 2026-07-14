@@ -23,6 +23,8 @@ export const initSocket = (httpServer: HttpServer, corsOrigin: string) => {
 
       if (!room) return;
 
+      console.log("ONLINE USERS:", room.isOnline.length);
+
       io.to(roomId).emit("room-online-updated", {
         roomId,
         onlineCount: room.isOnline.length,
@@ -30,7 +32,6 @@ export const initSocket = (httpServer: HttpServer, corsOrigin: string) => {
 
       console.log(`User joined ${roomId}`);
     });
-
     socket.on("leave-room", async ({ roomId, clientId }) => {
       const room = await Chatroom.findById(roomId);
       const user = await User.findOne({ clientId });
