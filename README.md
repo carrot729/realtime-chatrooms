@@ -40,9 +40,8 @@ A real-time chat room platform built with **React, Node.js, Express, Socket.IO, 
 
 ## 📸 Preview
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/09fe5060-6a02-4e99-ab44-f539f96e2163" alt="Realtime Chatrooms Preview" width="800"/>
-</p>
+https://github.com/user-attachments/assets/09fe5060-6a02-4e99-ab44-f539f96e2163 
+
 
 ---
 
