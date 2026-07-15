@@ -18,11 +18,6 @@ const enterChatroomController = async (
   const { clientId, username, roomId } = req.body;
 
   try {
-    if (!username)
-      return res
-        .status(400)
-        .json({ success: false, message: "Please enter a username" });
-
     if (!clientId)
       return res
         .status(404)
@@ -46,8 +41,18 @@ const enterChatroomController = async (
         .status(404)
         .json({ success: false, message: "User not found" });
 
-    user.username = username;
-    await user.save();
+    if (!user.username) {
+      if (!username) {
+        return res.status(400).json({
+          success: false,
+          code: "USERNAME_REQUIRED",
+          message: "Please enter a username.",
+        });
+      }
+
+      user.username = username;
+      await user.save();
+    }
 
     if (!room.isOnline.some((id) => id.equals(user._id))) {
       room.isOnline.push(user._id);

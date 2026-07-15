@@ -29,7 +29,7 @@ type RoomStoreType = {
     clientId: string,
     username: string,
     roomId: string,
-  ) => Promise<Chatroom | null>;
+  ) => Promise<Chatroom | "USERNAME_REQUIRED" | null>;
   loadCurrentRoom: (
     roomId: string,
     clientId: string,
@@ -137,25 +137,24 @@ const useChatroomStore = create<RoomStoreType>((set) => ({
         roomId,
       });
 
-      socket.connect();
-      socket.emit("join-room", response.data.room._id);
-
       set({ enterRoomLoading: false });
 
       return response.data.room;
     } catch (error) {
-      console.log(error);
+      set({ enterRoomLoading: false });
+
       if (axios.isAxiosError(error)) {
-        const message =
-          error.response?.data?.message ?? "Something went wrong. Try again";
+        if (error.response?.data?.code === "USERNAME_REQUIRED") {
+          return "USERNAME_REQUIRED";
+        }
 
         set({
-          enterRoomLoading: false,
-          enterRoomError: message,
+          enterRoomError:
+            error.response?.data?.message ?? "Something went wrong",
         });
-
-        return null;
       }
+
+      return null;
     }
   },
 

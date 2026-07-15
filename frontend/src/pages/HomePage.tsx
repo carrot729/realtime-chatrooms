@@ -98,10 +98,12 @@ const HomePage = () => {
       return;
     }
 
-    const room = await enterRoom(clientId, username, selectedRoomId);
+    const result = await enterRoom(clientId, username, selectedRoomId);
 
-    if (room) {
-      navigate(`/room/${room?._id}`);
+    if (result && result !== "USERNAME_REQUIRED") {
+      setUsername("");
+      setShowUsername(false);
+      navigate(`/room/${result._id}`);
     }
   };
 
@@ -156,9 +158,20 @@ const HomePage = () => {
                 </span>
 
                 <button
-                  onClick={() => {
-                    setShowUsername(true);
-                    setSelectedRoomId(r?._id);
+                  onClick={async () => {
+                    if (!clientId) return;
+
+                    const result = await enterRoom(clientId, "", r._id);
+
+                    if (result === "USERNAME_REQUIRED") {
+                      setSelectedRoomId(r._id);
+                      setShowUsername(true);
+                      return;
+                    }
+
+                    if (result) {
+                      navigate(`/room/${result._id}`);
+                    }
                   }}
                   className="px-4 py-1.5 rounded-md bg-teal-400 text-neutral-950 text-sm font-semibold hover:bg-teal-300 transition cursor-pointer"
                 >
