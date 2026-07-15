@@ -101,7 +101,7 @@ npm install
 Create a `.env` file:
 
 ```env
-PORT=5000
+PORT=8000
 MONGO_URI=your_mongodb_connection_string
 CLIENT_URL=http://localhost:5173
 ```
@@ -124,7 +124,7 @@ npm install
 Create `.env`:
 
 ```env
-VITE_API_URL=http://localhost:5000
+VITE_API_URL=http://localhost:8000
 ```
 
 Start frontend:
