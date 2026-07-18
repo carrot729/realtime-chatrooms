@@ -1,1 +1,0 @@
-{"version":3,"file":"loadMessages.controller.d.ts","sourceRoot":"","sources":["../../src/controllers/loadMessages.controller.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAC;AAGjD,QAAA,MAAM,sBAAsB,GAC1B,KAAK,OAAO,CAAC,EAAE,EAAE,EAAE,EAAE;IAAE,MAAM,EAAE,MAAM,CAAA;CAAE,CAAC,EACxC,KAAK,QAAQ,4DAmCd,CAAC;AAEF,eAAe,sBAAsB,CAAC"}
