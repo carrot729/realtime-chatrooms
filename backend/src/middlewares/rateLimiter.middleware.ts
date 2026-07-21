@@ -3,12 +3,8 @@ import rateLimit from "express-rate-limit";
 /**
  * Rate limiting middleware.
  *
- * Currently applied to:
- *   - send-message: prevents chat spam
- *
  * To add rate limiting to other endpoints, create a new limiter using rateLimit()
- * and apply it in the corresponding route file, following the same pattern as
- * messageLimiter below.
+ * and apply it in the corresponding route file, following the same pattern as messageLimiter below.
  */
 
 // Window duration in milliseconds (default: 1 minute)
