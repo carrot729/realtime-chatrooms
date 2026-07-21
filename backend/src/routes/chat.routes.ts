@@ -7,6 +7,7 @@ import enterChatroomController from "../controllers/enterChatroom.controller.js"
 import loadCurrentRoomController from "../controllers/loadCurrentRoom.Controller.js";
 import sendMessageController from "../controllers/sendMessage.controller.js";
 import loadMessagesController from "../controllers/loadMessages.controller.js";
+import { messageLimiter } from "../middlewares/rateLimiter.middleware.js";
 
 const router = express.Router();
 
@@ -15,7 +16,7 @@ router.get("/load-rooms", loadRoomsController);
 router.post("/join-room", joinRoomController);
 router.post("/enter-room", enterChatroomController);
 router.post("/load-current-room", loadCurrentRoomController);
-router.post("/send-message", sendMessageController);
+router.post("/send-message", messageLimiter, sendMessageController);
 router.post("/load-messages", loadMessagesController);
 
 export default router;
