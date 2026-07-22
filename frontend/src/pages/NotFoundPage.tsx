@@ -6,13 +6,13 @@ const NotFoundPage = () => {
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 flex items-center justify-center px-5">
       <div className="text-center max-w-md">
-        <p className="font-mono text-sm tracking-widest text-amber-400 uppercase">
+        <p className="font-mono text-md tracking-widest text-amber-400 uppercase">
           Error 404
         </p>
 
         <h1 className="text-6xl font-bold mt-4">Lost?</h1>
 
-        <p className="text-neutral-400 mt-4">
+        <p className="text-neutral-400 mt-4 px-5">
           The page you are looking for does not exist or has been moved.
         </p>
 
