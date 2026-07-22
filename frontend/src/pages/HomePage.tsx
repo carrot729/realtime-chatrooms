@@ -4,12 +4,14 @@ import { useNavigate } from "react-router";
 import { SyncLoader } from "react-spinners";
 
 import useChatroomStore from "../stores/chatroom.store";
+import useUserStore from "../stores/user.store";
 
 const HomePage = () => {
   const navigate = useNavigate();
 
   const [showCreate, setShowCreate] = useState(false);
   const [showJoin, setShowJoin] = useState(false);
+  const [showEditUsername, setShowEditUsername] = useState(false);
   const [showUsername, setShowUsername] = useState(false);
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
 
@@ -32,6 +34,7 @@ const HomePage = () => {
   const [joinCode, setJoinCode] = useState("");
 
   const [username, setUsername] = useState("");
+  const [editUsername, setEditUsername] = useState("");
 
   const clientId = localStorage.getItem("clientId");
 
@@ -106,6 +109,21 @@ const HomePage = () => {
     }
   };
 
+  const handleEditUsername = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!clientId) {
+      console.log("ClientId not found");
+      return;
+    }
+
+    const result = await useUserStore.getState().editUsername(clientId, editUsername);
+    if (result) {
+      setEditUsername("");
+      setShowEditUsername(false);
+      navigate(`/`);
+    }
+  };
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 px-5 py-12 sm:py-16">
       <div className="max-w-3xl mx-auto">
@@ -125,6 +143,12 @@ const HomePage = () => {
           </div>
 
           <div className="flex gap-2">
+            <button
+              onClick={() => setShowEditUsername(true)}
+              className="px-5 py-2.5 rounded-lg border border-neutral-700 text-sm font-semibold hover:border-neutral-500 transition cursor-pointer"
+            >
+              Edit Username
+            </button>
             <button
               onClick={() => setShowJoin(true)}
               className="px-5 py-2.5 rounded-lg border border-neutral-700 text-sm font-semibold hover:border-neutral-500 transition cursor-pointer"
@@ -251,6 +275,36 @@ const HomePage = () => {
               className="px-5 py-2.5 rounded-lg bg-teal-400 text-neutral-950 text-sm font-semibold hover:bg-teal-300 transition cursor-pointer"
             >
               {joinRoomLoading ? <SyncLoader size={7} /> : "Join"}
+            </button>
+          </form>
+        </div>
+      )}
+
+      {showEditUsername && (
+        <div
+          className="fixed inset-0 bg-black/70 flex items-center justify-center p-5 z-50"
+          onClick={() => setShowEditUsername(false)}
+        >
+          <form
+            onClick={(e) => e.stopPropagation()}
+            onSubmit={(e) => handleEditUsername(e)}
+            className="bg-neutral-900 border border-neutral-800 rounded-2xl p-7 w-full max-w-sm flex flex-col gap-4"
+          >
+            <h2 className="text-2xl font-bold">Enter your new username</h2>
+
+            <input
+              onChange={(e) => setEditUsername(e.target.value)}
+              value={editUsername}
+              autoFocus
+              placeholder="Username"
+              className="bg-neutral-800 border border-neutral-700 rounded-lg px-3.5 py-3 text-sm focus:outline-none focus:border-amber-400"
+            />
+
+            <button
+              disabled={enterRoomLoading}
+              className="px-5 py-2.5 rounded-lg bg-amber-400 text-neutral-950 text-sm font-semibold hover:bg-amber-300 transition cursor-pointer"
+            >
+              {enterRoomLoading ? <SyncLoader size={7} /> : "Continue"}
             </button>
           </form>
         </div>
