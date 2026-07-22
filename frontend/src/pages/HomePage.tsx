@@ -117,7 +117,9 @@ const HomePage = () => {
       return;
     }
 
-    const result = await useUserStore.getState().editUsername(clientId, editUsername);
+    const result = await useUserStore
+      .getState()
+      .editUsername(clientId, editUsername);
     if (result) {
       setEditUsername("");
       setShowEditUsername(false);
@@ -125,7 +127,7 @@ const HomePage = () => {
     }
   };
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 px-5 py-12 sm:py-16">
+    <div className="min-h-screen bg-neutral-950 text-neutral-100 px-6 md:px-10 lg:px-5 py-12 sm:py-16">
       <div className="max-w-3xl mx-auto">
         <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 pb-6 mb-10 border-b border-neutral-800">
           <div className="flex items-center gap-3">
@@ -142,23 +144,24 @@ const HomePage = () => {
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="grid grid-cols-2 sm:flex sm:flex-row gap-2 w-full sm:w-auto">
             <button
               onClick={() => setShowEditUsername(true)}
-              className="px-5 py-2.5 rounded-lg border border-neutral-700 text-sm font-semibold hover:border-neutral-500 transition cursor-pointer"
+              className="px-4 py-2.5 rounded-lg border border-neutral-700 text-sm font-semibold hover:border-neutral-500 transition cursor-pointer truncate"
             >
               Edit Username
             </button>
+
             <button
               onClick={() => setShowJoin(true)}
-              className="px-5 py-2.5 rounded-lg border border-neutral-700 text-sm font-semibold hover:border-neutral-500 transition cursor-pointer"
+              className="px-4 py-2.5 rounded-lg border border-neutral-700 text-sm font-semibold hover:border-neutral-500 transition cursor-pointer truncate"
             >
               Join by code
             </button>
 
             <button
               onClick={() => setShowCreate(true)}
-              className="px-5 py-2.5 rounded-lg bg-amber-400 text-neutral-950 text-sm font-semibold hover:bg-amber-300 transition cursor-pointer"
+              className="col-span-2 sm:col-span-1 px-5 py-2.5 rounded-lg bg-amber-400 text-neutral-950 text-sm font-semibold hover:bg-amber-300 transition cursor-pointer"
             >
               + Create room
             </button>
