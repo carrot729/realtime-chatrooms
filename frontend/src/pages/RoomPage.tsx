@@ -27,6 +27,7 @@ const RoomPage = () => {
     message: string;
     username: string;
     userId: string;
+    ownerId?: string;
   };
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -170,6 +171,7 @@ const RoomPage = () => {
                 msg.userId === clientId ? "text-neutral-800" : "text-amber-400"
               }`}
             >
+	      {msg.ownerId === msg.userId && <span className="mr-1">👑</span>}
               {msg.username}
             </p>
 

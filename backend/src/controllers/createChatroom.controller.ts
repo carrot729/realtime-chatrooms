@@ -36,6 +36,7 @@ const createChatroomController = async (
 
     const chatroom = await Chatroom.create({
       name: roomName,
+      owner: user._id,
       members: [user._id],
     });
 

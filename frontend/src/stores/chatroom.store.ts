@@ -15,6 +15,7 @@ type Message = {
   message: string;
   username: string;
   userId: string;
+  ownerId: string;
 };
 
 type RoomStoreType = {
