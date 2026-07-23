@@ -75,6 +75,7 @@ const sendMessageController = async (
       message: newMessage.content,
       username: user.username,
       userId: user._id.toString(),
+      ownerId: room.owner.toString(),
     });
 
     return res.status(201).json({
