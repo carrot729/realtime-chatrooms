@@ -5,6 +5,7 @@ import { SyncLoader } from "react-spinners";
 
 import useChatroomStore from "../stores/chatroom.store";
 import useUserStore from "../stores/user.store";
+import { BiCopy } from "react-icons/bi";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ const HomePage = () => {
   } = useChatroomStore();
 
   const [roomName, setRoomName] = useState("");
+  const [roomDescription, setRoomDescription] = useState("");
   const [joinCode, setJoinCode] = useState("");
 
   const [username, setUsername] = useState("");
@@ -59,11 +61,12 @@ const HomePage = () => {
       return;
     }
 
-    const room = await createRoom(clientId, roomName);
+    const room = await createRoom(clientId, roomName, roomDescription);
 
     if (room) {
       setShowCreate(false);
       setRoomName("");
+      setRoomDescription("");
       await loadRooms(clientId);
     }
   };
@@ -128,7 +131,7 @@ const HomePage = () => {
   };
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 px-6 md:px-10 lg:px-5 py-12 sm:py-16">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 pb-6 mb-10 border-b border-neutral-800">
           <div className="flex items-center gap-3">
             <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse flex-shrink-0" />
@@ -168,20 +171,38 @@ const HomePage = () => {
           </div>
         </header>
 
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
+          {" "}
           {rooms.map((r) => (
             <div
               key={r._id}
-              className="bg-neutral-900 border border-neutral-800 rounded-xl p-5 hover:border-amber-400 hover:-translate-y-0.5 transition"
+              className="bg-neutral-900 border border-neutral-800 rounded-xl p-5 hover:border-amber-400 hover:-translate-y-0.5 transition flex flex-col justify-between gap-3 sm:min-h-[220px]"
             >
               <div className="flex justify-between items-start gap-3">
-                <h2 className="text-lg font-semibold">{r?.name}</h2>
+                <h2 className="text-lg font-bold ">{r?.name}</h2>
               </div>
 
+              <p
+                className={`text-sm leading-relaxed line-clamp-3 ${
+                  r?.description
+                    ? "text-neutral-300"
+                    : "text-neutral-500 italic"
+                }`}
+              >
+                {r?.description || "--No Description--"}
+              </p>
+
               <div className="flex justify-between items-center mt-3">
-                <span className="font-mono text-xs font-semibold tracking-[0.12em] bg-neutral-800 border border-neutral-700 text-teal-300 px-2.5 py-1.5 rounded-md">
+                <div
+                  onClick={() => {
+                    navigator.clipboard.writeText(r?.joinCode);
+                  }}
+                  title="Click to copy"
+                  className="flex items-center gap-1.5 font-mono text-xs font-semibold tracking-[0.12em] bg-neutral-800 border border-neutral-700 text-teal-300 px-2.5 py-1.5 rounded-md cursor-pointer hover:bg-neutral-700 transition"
+                >
                   {r?.joinCode}
-                </span>
+                  <BiCopy size={13} className="text-teal-300" />
+                </div>
 
                 <button
                   onClick={async () => {
@@ -220,14 +241,36 @@ const HomePage = () => {
             className="bg-neutral-900 border border-neutral-800 rounded-2xl p-7 w-full max-w-sm flex flex-col gap-4"
           >
             <h2 className="text-2xl font-bold">Create a new room</h2>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs text-neutral-400">Name</label>
+              <input
+                onChange={(e) => setRoomName(e.target.value)}
+                value={roomName}
+                autoFocus
+                placeholder="Room name"
+                className="bg-neutral-800 border border-neutral-700 rounded-lg px-3.5 py-3 text-sm focus:outline-none focus:border-amber-400"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <div className="flex justify-between items-center">
+                <label className="text-xs text-neutral-400">
+                  Description{" "}
+                  <span className="text-neutral-600">(Optional)</span>
+                </label>
+                <span className="text-[10px] text-neutral-500">
+                  {roomDescription.length}/150
+                </span>
+              </div>
 
-            <input
-              onChange={(e) => setRoomName(e.target.value)}
-              value={roomName}
-              autoFocus
-              placeholder="Room name"
-              className="bg-neutral-800 border border-neutral-700 rounded-lg px-3.5 py-3 text-sm focus:outline-none focus:border-amber-400"
-            />
+              <textarea
+                value={roomDescription}
+                onChange={(e) => setRoomDescription(e.target.value)}
+                maxLength={150}
+                rows={4}
+                placeholder="What's this room about?"
+                className="bg-neutral-800 border border-neutral-700 rounded-lg px-3.5 py-2 text-sm focus:outline-none focus:border-amber-400 resize-none"
+              />
+            </div>
 
             {createChatroomError && (
               <p className="w-full text-sm text-red-400 -mt-2">
