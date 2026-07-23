@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router";
+import { FaCrown } from 'react-icons/fa';
+
 
 import socket from "../lib/socket";
 
@@ -171,7 +173,7 @@ const RoomPage = () => {
                 msg.userId === clientId ? "text-neutral-800" : "text-amber-400"
               }`}
             >
-	      {msg.ownerId === msg.userId && <span className="mr-1">👑</span>}
+	      {msg.ownerId === msg.userId && <FaCrown className="w-4 h-4 mr-1 inline text-yellow-500" />}
               {msg.username}
             </p>
 
