@@ -8,13 +8,14 @@ type RoomType = {
   username: string;
   clientId: string;
   roomName: string;
+  roomDescription: string;
 };
 
 const createChatroomController = async (
   req: Request<{}, {}, RoomType>,
   res: Response,
 ) => {
-  const { clientId, roomName } = req.body;
+  const { clientId, roomName, roomDescription } = req.body;
 
   try {
     if (!clientId)
@@ -36,6 +37,7 @@ const createChatroomController = async (
 
     const chatroom = await Chatroom.create({
       name: roomName,
+      description: roomDescription,
       owner: user._id,
       members: [user._id],
     });

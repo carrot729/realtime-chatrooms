@@ -4,11 +4,17 @@ import { nanoid } from "nanoid";
 const chatroomSchema = new mongoose.Schema(
   {
     name: { type: String, trim: true, required: true },
+    description: {
+      type: String,
+      default: "",
+      maxlength: 150,
+      trim: true,
+    },
     owner: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     members: [
       {
         type: mongoose.Schema.Types.ObjectId,
