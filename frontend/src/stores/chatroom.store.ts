@@ -23,9 +23,11 @@ type Message = {
 type RoomStoreType = {
   currentRoom: Chatroom | null;
   rooms: Chatroom[];
+  publicRooms: Chatroom[];
   createChatroomLoading: boolean;
   createChatroomError: string | null;
   loadingLoadRooms: boolean;
+  loadingPublicRooms: boolean;
   joinRoomLoading: boolean;
   enterRoomLoading: boolean;
   joinRoomError: string | null;
@@ -38,6 +40,7 @@ type RoomStoreType = {
     roomDescriptoin: string,
   ) => Promise<Chatroom | null>;
   loadRooms: (clientId: string) => Promise<Chatroom[] | null>;
+  loadPublicRooms: (clientId: string) => Promise<Chatroom[] | null>;
   joinRoom: (joinCode: string, clientId: string) => Promise<Chatroom | null>;
   enterRoom: (
     clientId: string,
@@ -60,17 +63,17 @@ type RoomStoreType = {
 const useChatroomStore = create<RoomStoreType>((set) => ({
   currentRoom: null,
   rooms: [],
+  publicRooms: [],
   createChatroomLoading: false,
   createChatroomError: null,
   loadingLoadRooms: false,
+  loadingPublicRooms: false,
 
   joinRoomLoading: false,
   joinRoomError: null,
 
   enterRoomLoading: false,
   enterRoomError: null,
-
-  editVisibilityError: null,
 
   editVisibilityError: null,
 
@@ -124,6 +127,26 @@ const useChatroomStore = create<RoomStoreType>((set) => ({
     } catch (error) {
       console.log(error);
       set({ loadingLoadRooms: false });
+      return null;
+    }
+  },
+
+  loadPublicRooms: async (clientId: string) => {
+    set({ loadingPublicRooms: true });
+
+    try {
+      const response = await api.get("/chatroom/load-public-room", {
+        params: { clientId },
+      });
+
+      const publicRooms = response.data.data as Chatroom[];
+
+      set({ publicRooms, loadingPublicRooms: false });
+
+      return publicRooms;
+    } catch (error) {
+      console.log("Error loading public rooms:", error);
+      set({ loadingPublicRooms: false });
       return null;
     }
   },
